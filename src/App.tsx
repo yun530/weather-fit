@@ -257,13 +257,51 @@ export default function App() {
             </>
           )}
 
-          {/* ── 캐릭터 ── */}
+          {/* ── 캐릭터 + 말풍선 ── */}
           {(weather || loading) && (
-            <div style={{ background: '#3E8822', borderTop: '3px solid #0A1A05', borderBottom: '3px solid #0A1A05' }}>
-              {weather
-                ? <WeatherCharacter tmp={weather.tmp} pty={weather.pty} sky={weather.sky} />
-                : <div style={{ height: '220px' }} />
-              }
+            <div style={{ background: '#3E8822', borderTop: '3px solid #0A1A05', borderBottom: '3px solid #0A1A05', padding: '12px 16px 0', position: 'relative' }}>
+              {weather ? (
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: '10px' }}>
+                  {/* 캐릭터 */}
+                  <div style={{ flexShrink: 0 }}>
+                    <WeatherCharacter tmp={weather.tmp} pty={weather.pty} sky={weather.sky} />
+                  </div>
+                  {/* 말풍선 */}
+                  {aiTip && (
+                    <div style={{ flex: 1, marginBottom: '28px', position: 'relative' }}>
+                      {/* 말풍선 본체 */}
+                      <div className="parchment" style={{ padding: '10px 12px' }}>
+                        <p style={{ fontSize: '11px', color: '#2A1400', lineHeight: 2, fontFamily: 'DotGothic16' }}>
+                          {aiTip}
+                        </p>
+                      </div>
+                      {/* 말풍선 꼬리 (왼쪽 아래 방향) */}
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '-10px',
+                        left: '14px',
+                        width: 0,
+                        height: 0,
+                        borderLeft: '10px solid transparent',
+                        borderRight: '0px solid transparent',
+                        borderTop: '10px solid #6A4818',
+                      }} />
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '-7px',
+                        left: '15px',
+                        width: 0,
+                        height: 0,
+                        borderLeft: '8px solid transparent',
+                        borderRight: '0px solid transparent',
+                        borderTop: '8px solid #EDE0A8',
+                      }} />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div style={{ height: '220px' }} />
+              )}
             </div>
           )}
 
@@ -296,17 +334,6 @@ export default function App() {
                   ))}
                 </div>
 
-                {/* 스타일 팁 */}
-                {aiTip && (
-                  <div className="parchment" style={{ marginTop: '14px', padding: '14px 16px' }}>
-                    <div style={{ fontSize: '11px', color: '#7A5010', marginBottom: '8px', letterSpacing: '0.05em' }}>
-                      ✨ 스타일 팁
-                    </div>
-                    <p style={{ fontSize: '12px', color: '#2A1400', lineHeight: 1.9, fontFamily: 'DotGothic16' }}>
-                      {aiTip}
-                    </p>
-                  </div>
-                )}
               </div>
             </>
           )}
