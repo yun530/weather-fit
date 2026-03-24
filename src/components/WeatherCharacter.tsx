@@ -8,7 +8,6 @@ export default function WeatherCharacter({ tmp, pty, sky }: Props) {
   // 상황에 따른 결정
   const hasUmbrella = pty === 1 || pty === 4 || pty === 2;
   const isWinter = tmp < 9;
-  const isSummer = tmp >= 28;
 
   // 배경 효과 결정
   const showRain = pty === 1 || pty === 4;
