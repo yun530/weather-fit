@@ -153,6 +153,8 @@ export default function App() {
   const [aiTip, setAiTip] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [inspoImg, setInspoImg] = useState<{ imageUrl: string; link: string; author: string } | null>(null);
+  const [inspoLoading, setInspoLoading] = useState(false);
 
   const activeLat = gpsCoords?.lat ?? CITIES[selectedCity].lat;
   const activeLon = gpsCoords?.lon ?? CITIES[selectedCity].lon;
@@ -194,6 +196,29 @@ export default function App() {
   const outfit = weather ? getOutfit(weather) : null;
   const bgGradient = weather ? getBgGradient(weather.sky, weather.pty, weather.tmp) : 'from-sky-400 to-blue-500';
   const emoji = weather ? getSkyEmoji(weather.sky, weather.pty) : '☀️';
+
+  const weatherState = weather
+    ? (weather.pty === 1 || weather.pty === 4) ? 'rain'
+    : weather.pty === 2 ? 'rain'
+    : weather.pty === 3 ? 'snow'
+    : weather.tmp >= 28 ? 'veryhot'
+    : weather.tmp >= 23 ? 'warm'
+    : weather.tmp >= 17 ? 'mild'
+    : weather.tmp >= 9  ? 'cool'
+    : weather.tmp >= 4  ? 'cold'
+    : 'verycold'
+    : 'mild';
+
+  const fetchInspo = async () => {
+    setInspoLoading(true);
+    setInspoImg(null);
+    try {
+      const res = await axios.get('/api/outfit-image', { params: { state: weatherState } });
+      setInspoImg(res.data);
+    } finally {
+      setInspoLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-5">
@@ -367,6 +392,20 @@ export default function App() {
                 {/* 버튼 영역 */}
                 <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
                   <button
+                    onClick={fetchInspo}
+                    disabled={inspoLoading}
+                    style={{
+                      flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px',
+                      background: inspoLoading ? '#888' : 'linear-gradient(145deg, #E8A020, #C07010)',
+                      border: '2px solid #6A3800',
+                      boxShadow: 'inset 2px 2px 0 #F8C040, inset -2px -2px 0 #804000',
+                      color: 'white', fontFamily: 'DotGothic16', fontSize: '11px',
+                      padding: '7px 10px', cursor: inspoLoading ? 'wait' : 'pointer',
+                    }}
+                  >
+                    {inspoLoading ? '⟳ 불러오는 중...' : '🎲 랜덤 코디 사진'}
+                  </button>
+                  <button
                     onClick={() => window.open(`https://www.pinterest.com/search/pins/?q=${encodeURIComponent(outfit.category + ' 코디')}`, '_blank')}
                     style={{
                       flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px',
@@ -376,12 +415,40 @@ export default function App() {
                       padding: '7px 10px', cursor: 'pointer',
                     }}
                   >
-                    📌 핀터레스트 코디 보기
+                    📌 핀터레스트
                   </button>
                 </div>
                 <div style={{ textAlign: 'center', marginTop: '6px', fontSize: '10px', color: 'rgba(200,240,140,0.7)', fontFamily: 'DotGothic16' }}>
                   👆 아이템 클릭 → 무신사 쇼핑
                 </div>
+
+                {/* 코디 사진 */}
+                {inspoImg && (
+                  <div style={{ marginTop: '12px', position: 'relative' }}>
+                    <img
+                      src={inspoImg.imageUrl}
+                      alt="outfit inspiration"
+                      style={{ width: '100%', maxHeight: '420px', objectFit: 'cover', border: '2px solid #0A1A05', display: 'block' }}
+                    />
+                    <div style={{
+                      position: 'absolute', bottom: 0, left: 0, right: 0,
+                      background: 'rgba(0,0,0,0.55)', padding: '6px 10px',
+                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    }}>
+                      <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.7)', fontFamily: 'DotGothic16' }}>
+                        📷 {inspoImg.author}
+                      </span>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button onClick={fetchInspo} style={{ fontSize: '10px', color: '#FFD060', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'DotGothic16' }}>
+                          🎲 다른 사진
+                        </button>
+                        <a href={inspoImg.link} target="_blank" rel="noreferrer" style={{ fontSize: '10px', color: '#A0D0FF', fontFamily: 'DotGothic16', textDecoration: 'none' }}>
+                          원본 ↗
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </>
           )}
