@@ -364,8 +364,23 @@ export default function App() {
                     <MusinsaSlot key={item} item={item} className="item-slot item-slot-alt" textColor="#2A1000" />
                   ))}
                 </div>
-                <div style={{ textAlign: 'center', marginTop: '8px', fontSize: '10px', color: 'rgba(200,240,140,0.7)', fontFamily: 'DotGothic16' }}>
-                  👆 아이템을 눌러서 무신사에서 구경해봐요!
+                {/* 버튼 영역 */}
+                <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                  <button
+                    onClick={() => window.open(`https://www.pinterest.com/search/pins/?q=${encodeURIComponent(outfit.category + ' 코디')}`, '_blank')}
+                    style={{
+                      flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px',
+                      background: '#E60023', border: '2px solid #8B0000',
+                      boxShadow: 'inset 2px 2px 0 #FF4060, inset -2px -2px 0 #8B0000',
+                      color: 'white', fontFamily: 'DotGothic16', fontSize: '11px',
+                      padding: '7px 10px', cursor: 'pointer',
+                    }}
+                  >
+                    📌 핀터레스트 코디 보기
+                  </button>
+                </div>
+                <div style={{ textAlign: 'center', marginTop: '6px', fontSize: '10px', color: 'rgba(200,240,140,0.7)', fontFamily: 'DotGothic16' }}>
+                  👆 아이템 클릭 → 무신사 쇼핑
                 </div>
               </div>
             </>
