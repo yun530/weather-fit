@@ -33,6 +33,38 @@ const ITEM_EMOJI: Record<string, string> = {
 };
 const getItemEmoji = (item: string) => ITEM_EMOJI[item] || '📦';
 
+function MusinsaSlot({ item, className, textColor }: { item: string; className: string; textColor: string }) {
+  const [loading, setLoading] = useState(false);
+
+  const handleClick = async () => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      const res = await axios.get('/api/musinsa', { params: { item } });
+      window.open(res.data.url, '_blank');
+    } catch {
+      window.open(`https://www.musinsa.com/search/musinsa/goods?q=${encodeURIComponent(item)}`, '_blank');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div
+      className={className}
+      onClick={handleClick}
+      style={{ cursor: loading ? 'wait' : 'pointer', position: 'relative' }}
+      title={`무신사에서 ${item} 보기`}
+    >
+      <span style={{ fontSize: '26px', lineHeight: 1 }}>{loading ? '⟳' : getItemEmoji(item)}</span>
+      <span style={{ fontSize: '10px', color: textColor, textAlign: 'center', lineHeight: 1.4, fontFamily: 'DotGothic16' }}>
+        {item}
+      </span>
+      <span style={{ fontSize: '8px', color: '#E07020', fontFamily: 'DotGothic16', lineHeight: 1 }}>무신사↗</span>
+    </div>
+  );
+}
+
 function parseCurrentWeather(items: any[]): WeatherData {
   const data: Record<string, string> = {};
   const now = new Date();
@@ -324,23 +356,15 @@ export default function App() {
                 {/* 아이템 슬롯 */}
                 <div className="flex gap-2 overflow-x-auto scroll-hide" style={{ paddingBottom: '4px' }}>
                   {outfit.items.map(item => (
-                    <div key={item} className="item-slot">
-                      <span style={{ fontSize: '26px', lineHeight: 1 }}>{getItemEmoji(item)}</span>
-                      <span style={{ fontSize: '10px', color: '#1A0A00', textAlign: 'center', lineHeight: 1.4, fontFamily: 'DotGothic16' }}>
-                        {item}
-                      </span>
-                    </div>
+                    <MusinsaSlot key={item} item={item} className="item-slot" textColor="#1A0A00" />
                   ))}
                   {outfit.extras.map(item => (
-                    <div key={item} className="item-slot item-slot-alt">
-                      <span style={{ fontSize: '26px', lineHeight: 1 }}>{getItemEmoji(item)}</span>
-                      <span style={{ fontSize: '10px', color: '#2A1000', textAlign: 'center', lineHeight: 1.4, fontFamily: 'DotGothic16' }}>
-                        {item}
-                      </span>
-                    </div>
+                    <MusinsaSlot key={item} item={item} className="item-slot item-slot-alt" textColor="#2A1000" />
                   ))}
                 </div>
-
+                <div style={{ textAlign: 'center', marginTop: '8px', fontSize: '10px', color: 'rgba(200,240,140,0.7)', fontFamily: 'DotGothic16' }}>
+                  👆 아이템을 눌러서 무신사에서 구경해봐요!
+                </div>
               </div>
             </>
           )}
