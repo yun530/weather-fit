@@ -137,7 +137,7 @@ export function getStyleTip(weather: WeatherData): string {
   return '🧊 매우 추운 날이에요! 패딩에 기모 이너, 장갑, 귀마개까지 완전 방한 채비를 하세요.';
 }
 
-export function getBgGradient(sky: number, pty: number, tmp: number): string {
+export function getBgGradient(_sky: number, pty: number, tmp: number): string {
   if (pty >= 1) return 'from-slate-400 to-slate-600';
   if (tmp >= 28) return 'from-amber-400 to-orange-500';
   if (tmp >= 23) return 'from-sky-400 to-cyan-500';
