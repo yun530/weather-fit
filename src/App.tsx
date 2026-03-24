@@ -45,9 +45,9 @@ const MUSINSA_CATEGORY: Record<string, string> = {
 function getMusinsaUrl(item: string): string {
   const cat = MUSINSA_CATEGORY[item];
   if (cat) {
-    return `https://www.musinsa.com/ranking/best?categoryCode=${cat}&period=daily`;
+    return `https://www.musinsa.com/category/${cat}/goods?sortCode=POPULAR`;
   }
-  return `https://www.musinsa.com/search/musinsa/goods?q=${encodeURIComponent(item)}&sortCode=BEST_SELLING`;
+  return `https://www.musinsa.com/search/musinsa/goods?q=${encodeURIComponent(item)}`;
 }
 
 function MusinsaSlot({ item, className, textColor }: { item: string; className: string; textColor: string }) {
