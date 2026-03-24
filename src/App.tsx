@@ -284,24 +284,24 @@ export default function App() {
                       {/* 말풍선 꼬리 - 테두리 */}
                       <div style={{
                         position: 'absolute',
-                        bottom: '-13px',
-                        left: '16px',
+                        bottom: '16px',
+                        left: '-14px',
                         width: 0,
                         height: 0,
-                        borderLeft: '12px solid transparent',
-                        borderRight: '4px solid transparent',
-                        borderTop: '13px solid #222',
+                        borderTop: '8px solid transparent',
+                        borderBottom: '8px solid transparent',
+                        borderRight: '14px solid #222',
                       }} />
                       {/* 말풍선 꼬리 - 흰색 */}
                       <div style={{
                         position: 'absolute',
-                        bottom: '-9px',
-                        left: '17px',
+                        bottom: '17px',
+                        left: '-11px',
                         width: 0,
                         height: 0,
-                        borderLeft: '10px solid transparent',
-                        borderRight: '3px solid transparent',
-                        borderTop: '10px solid white',
+                        borderTop: '7px solid transparent',
+                        borderBottom: '7px solid transparent',
+                        borderRight: '11px solid white',
                       }} />
                     </div>
                   )}
