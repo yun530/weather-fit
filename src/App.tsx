@@ -33,30 +33,32 @@ const ITEM_EMOJI: Record<string, string> = {
 };
 const getItemEmoji = (item: string) => ITEM_EMOJI[item] || '📦';
 
+const MUSINSA_CATEGORY: Record<string, string> = {
+  '반팔 티셔츠': '001', '긴팔 셔츠': '001', '니트': '001', '터틀넥': '001', '가디건': '001',
+  '반바지': '003', '청바지': '003', '얇은 긴바지': '003', '두꺼운 바지': '003', '기모 바지': '003',
+  '얇은 재킷': '002', '두꺼운 재킷': '002', '코트': '002', '패딩': '002',
+  '방풍 재킷': '002', '방수 재킷': '002',
+  '스니커즈': '005', '운동화': '005', '샌들': '005', '방한 부츠': '005', '방수 부츠': '005',
+  '목도리': '011', '장갑': '011', '두꺼운 장갑': '011',
+};
+
+function getMusinsaUrl(item: string): string {
+  const cat = MUSINSA_CATEGORY[item];
+  if (cat) {
+    return `https://www.musinsa.com/ranking/best?categoryCode=${cat}&period=daily`;
+  }
+  return `https://www.musinsa.com/search/musinsa/goods?q=${encodeURIComponent(item)}&sortCode=BEST_SELLING`;
+}
+
 function MusinsaSlot({ item, className, textColor }: { item: string; className: string; textColor: string }) {
-  const [loading, setLoading] = useState(false);
-
-  const handleClick = async () => {
-    if (loading) return;
-    setLoading(true);
-    try {
-      const res = await axios.get('/api/musinsa', { params: { item } });
-      window.open(res.data.url, '_blank');
-    } catch {
-      window.open(`https://www.musinsa.com/search/musinsa/goods?q=${encodeURIComponent(item)}`, '_blank');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div
       className={className}
-      onClick={handleClick}
-      style={{ cursor: loading ? 'wait' : 'pointer', position: 'relative' }}
+      onClick={() => window.open(getMusinsaUrl(item), '_blank')}
+      style={{ cursor: 'pointer' }}
       title={`무신사에서 ${item} 보기`}
     >
-      <span style={{ fontSize: '26px', lineHeight: 1 }}>{loading ? '⟳' : getItemEmoji(item)}</span>
+      <span style={{ fontSize: '26px', lineHeight: 1 }}>{getItemEmoji(item)}</span>
       <span style={{ fontSize: '10px', color: textColor, textAlign: 'center', lineHeight: 1.4, fontFamily: 'DotGothic16' }}>
         {item}
       </span>
