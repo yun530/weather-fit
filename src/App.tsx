@@ -268,33 +268,40 @@ export default function App() {
                   </div>
                   {/* 말풍선 */}
                   {aiTip && (
-                    <div style={{ flex: 1, marginBottom: '28px', position: 'relative' }}>
+                    <div style={{ flex: 1, marginBottom: '32px', position: 'relative' }}>
                       {/* 말풍선 본체 */}
-                      <div className="parchment" style={{ padding: '10px 12px' }}>
-                        <p style={{ fontSize: '11px', color: '#2A1400', lineHeight: 2, fontFamily: 'DotGothic16' }}>
+                      <div style={{
+                        background: 'white',
+                        border: '2.5px solid #222',
+                        borderRadius: '12px',
+                        padding: '10px 12px',
+                        boxShadow: '3px 3px 0 #222',
+                      }}>
+                        <p style={{ fontSize: '11px', color: '#1A1A1A', lineHeight: 2, fontFamily: 'DotGothic16', margin: 0 }}>
                           {aiTip}
                         </p>
                       </div>
-                      {/* 말풍선 꼬리 (왼쪽 아래 방향) */}
+                      {/* 말풍선 꼬리 - 테두리 */}
                       <div style={{
                         position: 'absolute',
-                        bottom: '-10px',
-                        left: '14px',
+                        bottom: '-13px',
+                        left: '16px',
+                        width: 0,
+                        height: 0,
+                        borderLeft: '12px solid transparent',
+                        borderRight: '4px solid transparent',
+                        borderTop: '13px solid #222',
+                      }} />
+                      {/* 말풍선 꼬리 - 흰색 */}
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '-9px',
+                        left: '17px',
                         width: 0,
                         height: 0,
                         borderLeft: '10px solid transparent',
-                        borderRight: '0px solid transparent',
-                        borderTop: '10px solid #6A4818',
-                      }} />
-                      <div style={{
-                        position: 'absolute',
-                        bottom: '-7px',
-                        left: '15px',
-                        width: 0,
-                        height: 0,
-                        borderLeft: '8px solid transparent',
-                        borderRight: '0px solid transparent',
-                        borderTop: '8px solid #EDE0A8',
+                        borderRight: '3px solid transparent',
+                        borderTop: '10px solid white',
                       }} />
                     </div>
                   )}
