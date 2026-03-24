@@ -2,6 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import Anthropic from '@anthropic-ai/sdk';
 import * as dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { existsSync } from 'fs';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 dotenv.config();
 
@@ -123,7 +128,16 @@ app.post('/api/style', async (req, res) => {
   }
 });
 
-const PORT = 3001;
+// 프로덕션: 빌드된 프론트 정적 파일 서빙
+const distPath = join(__dirname, 'dist');
+if (existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.get('*', (req, res) => {
+    res.sendFile(join(distPath, 'index.html'));
+  });
+}
+
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`서버 실행 중: http://localhost:${PORT}`);
 });
