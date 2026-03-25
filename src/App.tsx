@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import WeatherCharacter from './components/WeatherCharacter';
+import WeatherIcon from './components/WeatherIcon';
 import HourlyForecast from './components/HourlyForecast';
 import TomorrowCard from './components/TomorrowCard';
 import { getOutfit, getSkyDesc, getStyleTip } from './utils/outfitEngine';
+// getOutfit은 내일 코디 추천에 사용
 import type { WeatherData } from './utils/outfitEngine';
 import type { HourSlot } from './components/HourlyForecast';
 import type { TomorrowData } from './components/TomorrowCard';
@@ -170,7 +172,16 @@ export default function App() {
 
   useEffect(() => { fetchWeather(); }, [fetchWeather]);
 
-  const outfit = weather ? getOutfit(weather) : null;
+  const tomorrowOutfit = tomorrow ? getOutfit({
+    tmp: Math.round((tomorrow.tmpMax + tomorrow.tmpMin) / 2),
+    reh: 50,
+    wsd: 2,
+    pop: tomorrow.pop,
+    pty: tomorrow.pty,
+    sky: tomorrow.sky,
+    skyDesc: '',
+    ptyDesc: '',
+  }) : null;
 
   // Mock data for Fine Dust (representative values for design)
   const dustStatus = { pm10: '보통', pm25: '좋음' };
@@ -193,12 +204,16 @@ export default function App() {
 
         {/* ── 메인 날씨 정보 ── */}
         <div className="temp-display">
-          <div className="temp-main">
-            {weather ? Math.round(weather.tmp) : '--'}
-            <span style={{ fontSize: '40px', marginTop: '10px', fontWeight: 300 }}>°</span>
-            <div style={{ marginLeft: '12px', marginTop: '15px' }}>
-              <div style={{ fontSize: '14px', color: '#888' }}>↓ 3°</div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div className="temp-main">
+              {weather ? Math.round(weather.tmp) : '--'}
+              <span style={{ fontSize: '40px', marginTop: '10px', fontWeight: 300 }}>°</span>
             </div>
+            {weather && (
+              <div style={{ marginRight: '8px', filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.12))' }}>
+                <WeatherIcon sky={weather.sky} pty={weather.pty} size={88} color="#5B8FCF" />
+              </div>
+            )}
           </div>
           
           <div className="temp-range">
@@ -221,7 +236,10 @@ export default function App() {
             </span>
           </div>
 
-          <WeatherCharacter />
+          {weather
+            ? <WeatherCharacter tmp={weather.tmp} pty={weather.pty} sky={weather.sky} />
+            : <WeatherCharacter tmp={0} pty={0} sky={1} />
+          }
 
           {aiTip && (
             <div style={{
@@ -241,15 +259,20 @@ export default function App() {
           )}
         </div>
 
-        {/* ── 오늘의 코디 ── */}
-        {outfit && (
+        {/* ── 내일 코디 추천 ── */}
+        {tomorrowOutfit && tomorrow && (
           <div style={{ padding: '4px 28px 24px' }}>
-            <div style={{ fontSize: '13px', fontWeight: 700, marginBottom: '14px', display: 'flex', justifyContent: 'space-between', color: '#111' }}>
-              <span>👔 오늘의 코디</span>
-              <span style={{ fontSize: '12px', fontWeight: 400, color: '#AAA' }}>{outfit.tempRange}</span>
+            <div style={{ marginBottom: '12px' }}>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: '#111', marginBottom: '2px' }}>
+                👗 내일 이 옷은 어때요?
+              </div>
+              <div style={{ fontSize: '11px', color: '#AAA' }}>
+                {tomorrow.dayLabel} · {tomorrow.tmpMin}°~{tomorrow.tmpMax}° · {tomorrowOutfit.tempRange}
+                {tomorrow.pop > 0 && <span style={{ color: '#32A1FF', marginLeft: '6px' }}>☔ {tomorrow.pop}%</span>}
+              </div>
             </div>
             <div className="flex gap-3 overflow-x-auto scroll-hide" style={{ paddingBottom: '4px' }}>
-              {outfit.items.map(item => (
+              {[...tomorrowOutfit.items, ...tomorrowOutfit.extras].map(item => (
                 <div
                   key={item}
                   onClick={() => window.open(getMusinsaUrl(item), '_blank')}
@@ -263,6 +286,9 @@ export default function App() {
                   </div>
                 </div>
               ))}
+            </div>
+            <div style={{ fontSize: '10px', color: '#CCC', marginTop: '8px' }}>
+              👆 아이템 클릭 → 무신사 여성 실시간 1위
             </div>
           </div>
         )}
