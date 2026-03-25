@@ -3,7 +3,6 @@ import axios from 'axios';
 import WeatherCharacter from './components/WeatherCharacter';
 import WeatherIcon from './components/WeatherIcon';
 import HourlyForecast from './components/HourlyForecast';
-import TomorrowCard from './components/TomorrowCard';
 import { getOutfit, getSkyDesc, getStyleTip } from './utils/outfitEngine';
 // getOutfit은 내일 코디 추천에 사용
 import type { WeatherData } from './utils/outfitEngine';
@@ -228,35 +227,66 @@ export default function App() {
         </div>
 
         {/* ── 캐릭터 섹션 ── */}
-        <div style={{ position: 'relative', marginTop: '12px' }}>
-          <div style={{ textAlign: 'center', fontSize: '13px', color: '#888', marginBottom: '4px' }}>
-            📍 {displayCity} · <b style={{ color: '#333' }}>{weather?.skyDesc || '로딩 중'}</b>
-            <span style={{ marginLeft: '8px', color: '#BBB' }}>
-              {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </span>
+        <div style={{ marginTop: '12px', padding: '0 16px' }}>
+          {/* 카카오 스타일 위치+날씨 */}
+          <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+            <div style={{ fontSize: '16px', fontWeight: 700, color: '#222', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
+              <span style={{ color: '#5B8FCF', fontSize: '13px' }}>◀</span>
+              <span>{displayCity}</span>
+              <span style={{ fontWeight: 400, color: '#555' }}>은(는)</span>
+              <b style={{ color: '#222' }}>{weather?.skyDesc || '—'}</b>
+            </div>
+            <div style={{ fontSize: '11px', color: '#BBB', marginTop: '3px' }}>
+              {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} 업데이트됨
+            </div>
           </div>
 
-          {weather
-            ? <WeatherCharacter tmp={weather.tmp} pty={weather.pty} sky={weather.sky} />
-            : <WeatherCharacter tmp={0} pty={0} sky={1} />
-          }
-
-          {aiTip && (
-            <div style={{
-              position: 'absolute',
-              top: '80px',
-              left: '16px',
-              maxWidth: '130px',
-              background: 'rgba(0,0,0,0.65)',
-              color: 'white',
-              padding: '8px 12px',
-              borderRadius: '14px',
-              fontSize: '11px',
-              lineHeight: 1.5,
-            }}>
-              {aiTip}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0px' }}>
+            {/* 캐릭터 */}
+            <div style={{ flexShrink: 0 }}>
+              {weather
+                ? <WeatherCharacter tmp={weather.tmp} pty={weather.pty} sky={weather.sky} />
+                : <WeatherCharacter tmp={0} pty={0} sky={1} />
+              }
             </div>
-          )}
+
+            {/* 말풍선 */}
+            {aiTip && (
+              <div style={{ position: 'relative', flex: 1 }}>
+                {/* 꼬리 (캐릭터 방향 = 왼쪽) */}
+                <div style={{
+                  position: 'absolute',
+                  left: '-10px',
+                  top: '18px',
+                  width: 0, height: 0,
+                  borderTop: '8px solid transparent',
+                  borderBottom: '8px solid transparent',
+                  borderRight: '10px solid #E8E8E8',
+                }} />
+                <div style={{
+                  position: 'absolute',
+                  left: '-7px',
+                  top: '19px',
+                  width: 0, height: 0,
+                  borderTop: '7px solid transparent',
+                  borderBottom: '7px solid transparent',
+                  borderRight: '8px solid white',
+                }} />
+                <div style={{
+                  background: 'white',
+                  border: '2px solid #E8E8E8',
+                  borderRadius: '16px',
+                  padding: '10px 13px',
+                  fontSize: '11px',
+                  lineHeight: 1.7,
+                  color: '#333',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.07)',
+                }}>
+                  {aiTip}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* ── 내일 코디 추천 ── */}
@@ -304,18 +334,10 @@ export default function App() {
 
       </div>
 
-      {/* ── 시간대별/내일 날씨 ── */}
-      <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        <div style={{ background: 'white', borderRadius: '28px', overflow: 'hidden', boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
-          <div style={{ padding: '18px 24px 8px', fontSize: '13px', fontWeight: 700, color: '#111' }}>⏰ 시간대별 예보</div>
-          <HourlyForecast hourly={hourly} />
-        </div>
-
-        {tomorrow && (
-          <div style={{ background: 'white', borderRadius: '28px', overflow: 'hidden', boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
-            <TomorrowCard data={tomorrow} />
-          </div>
-        )}
+      {/* ── 시간대별 예보 ── */}
+      <div style={{ marginTop: '16px', background: 'white', borderRadius: '28px', overflow: 'hidden', boxShadow: '0 8px 24px rgba(0,0,0,0.08)', padding: '0 8px 8px' }}>
+        <div style={{ padding: '18px 16px 8px', fontSize: '13px', fontWeight: 700, color: '#111' }}>⏰ 시간대별 예보</div>
+        <HourlyForecast hourly={hourly} />
       </div>
 
       {/* 로딩 표시 */}
