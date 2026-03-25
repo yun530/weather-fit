@@ -1,12 +1,12 @@
 const QUERIES = {
-  veryhot:  'summer fashion outfit women street style',
-  warm:     'spring summer dress fashion outfit women',
-  mild:     'spring autumn layering fashion outfit',
-  cool:     'fall sweater knit fashion outfit women',
-  cold:     'winter coat fashion outfit women street',
-  verycold: 'heavy winter puffer coat fashion outfit',
-  rain:     'rainy day fashion raincoat outfit',
-  snow:     'snow winter fashion outfit women',
+  veryhot:  'korean summer fashion outfit street style',
+  warm:     'korean spring summer fashion outfit',
+  mild:     'korean spring autumn fashion layering outfit',
+  cool:     'korean fall fashion knit sweater outfit',
+  cold:     'korean winter fashion coat outfit street',
+  verycold:'korean winter puffer coat fashion outfit',
+  rain:     'korean rainy day fashion raincoat outfit',
+  snow:     'korean snow day winter fashion outfit',
 };
 
 export default async function handler(req, res) {
@@ -14,8 +14,7 @@ export default async function handler(req, res) {
   const query = QUERIES[state] ?? QUERIES.mild;
 
   try {
-    const page = Math.floor(Math.random() * 5) + 1;
-    const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=20&page=${page}&orientation=portrait&content_filter=high`;
+    const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=30&page=1&orientation=portrait&content_filter=high`;
     const response = await fetch(url, {
       headers: { Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}` },
     });
